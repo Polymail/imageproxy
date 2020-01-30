@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -91,7 +92,8 @@ type Proxy struct {
 // be used.
 func NewProxy(transport http.RoundTripper, cache Cache) *Proxy {
 	if transport == nil {
-		transport = http.DefaultTransport
+		transport := http.DefaultTransport.(*http.Transport).Clone()
+		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 	if cache == nil {
 		cache = NopCache
@@ -117,7 +119,6 @@ func NewProxy(transport http.RoundTripper, cache Cache) *Proxy {
 	}
 
 	proxy.Client = client
-
 	return proxy
 }
 
@@ -401,6 +402,8 @@ type TransformingTransport struct {
 	CachingClient *http.Client
 
 	log func(format string, v ...interface{})
+
+	InsecureSSL bool
 }
 
 // RoundTrip implements the http.RoundTripper interface.
