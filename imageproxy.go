@@ -92,8 +92,9 @@ type Proxy struct {
 // be used.
 func NewProxy(transport http.RoundTripper, cache Cache) *Proxy {
 	if transport == nil {
-		transport = http.DefaultTransport.(*http.Transport).Clone()
-		transport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 	if cache == nil {
 		cache = NopCache
