@@ -153,7 +153,7 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := p.allowed(req); err != nil {
-		p.logf("%s: %v (%v)", err, req, req.URL.String())
+		p.logf("%s: %v", err, req)
 		http.Error(w, msgNotAllowed, http.StatusForbidden)
 		return
 	}
@@ -199,7 +199,7 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 		contentType = peekContentType(b)
 	}
 	if resp.ContentLength != 0 && !contentTypeMatches(p.ContentTypes, contentType) {
-		p.logf("content-type not allowed: %q (%v)", contentType, req.URL.String())
+		p.logf("content-type not allowed: %q", contentType)
 		http.Error(w, msgNotAllowed, http.StatusForbidden)
 		return
 	}
