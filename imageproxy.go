@@ -30,6 +30,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"path/filepath"
 	"strings"
@@ -199,7 +200,13 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 		contentType = peekContentType(b)
 	}
 	if resp.ContentLength != 0 && !contentTypeMatches(p.ContentTypes, contentType) {
-		p.logf("content-typenotallowed: %q (statuscode=%v) (url=%v)", contentType, resp.StatusCode, req.URL.String())
+		p.logf("content-type not allowed: %q", contentType)
+
+		if req.URL.String() == "https://drive.google.com/uc?id=17sxhpxgBku4Es9VBRiPbmdBsvcyoue-n" {
+			p.logf("DEBUGGING-DRIVE %v, %v, %v", contentType, resp.StatusCode)
+			bytes, _ := httputil.DumpResponse(resp, true)
+			println(string(bytes))
+		}
 		http.Error(w, msgNotAllowed, http.StatusForbidden)
 		return
 	}
