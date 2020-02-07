@@ -202,8 +202,8 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 	if resp.ContentLength != 0 && !contentTypeMatches(p.ContentTypes, contentType) {
 		p.logf("content-type not allowed: %q", contentType)
 
-		if req.URL.String() == "https://drive.google.com/uc?id=17sxhpxgBku4Es9VBRiPbmdBsvcyoue-n" {
-			p.logf("DEBUGGING-DRIVE %v, %v, %v", contentType, resp.StatusCode)
+		if resp.StatusCode == 403 || resp.StatusCode == 400 {
+			p.logf("DEBUGGING-DRIVE %v, %v, %v", contentType, resp.StatusCode, req.URL.Hostname())
 			bytes, _ := httputil.DumpResponse(resp, true)
 			println(string(bytes))
 		}
