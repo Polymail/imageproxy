@@ -119,6 +119,13 @@ func NewProxy(transport http.RoundTripper, cache Cache) *Proxy {
 		MarkCachedResponses: true,
 	}
 
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		if len(via) >= 10 {
+			return errors.New("stopped after 10 redirects")
+		}
+		fmt.Printf("redirecting (%v) to (%v)\n", via[0].URL.String(), req.URL.String())
+		return nil
+	}
 	proxy.Client = client
 
 	return proxy
