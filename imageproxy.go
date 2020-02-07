@@ -203,9 +203,12 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 		p.logf("content-type not allowed: %q", contentType)
 
 		if resp.StatusCode == 403 || resp.StatusCode == 400 {
-			p.logf("DEBUGGING-DRIVE %v, %v, %v", contentType, resp.StatusCode, req.URL.Hostname())
-			bytes, _ := httputil.DumpResponse(resp, true)
-			println(string(bytes))
+			host := req.URL.Hostname()
+			if !(host == "docs.google.com" || host == "drive.google.com" || host == "img.polymail.co") {
+				p.logf("DEBUGGING-DRIVE %v, %v, %v", contentType, resp.StatusCode, req.URL.Hostname())
+				bytes, _ := httputil.DumpResponse(resp, true)
+				println(string(bytes))
+			}
 		}
 		http.Error(w, msgNotAllowed, http.StatusForbidden)
 		return
