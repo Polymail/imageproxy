@@ -199,7 +199,7 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 		contentType = peekContentType(b)
 	}
 	if resp.ContentLength != 0 && !contentTypeMatches(p.ContentTypes, contentType) {
-		p.logf("content-typenotallowed: %q (statuscode=%v)", contentType, resp.StatusCode)
+		p.logf("content-typenotallowed: %q (statuscode=%v) (url=%v)", contentType, resp.StatusCode, req.URL.String())
 		http.Error(w, msgNotAllowed, http.StatusForbidden)
 		return
 	}
