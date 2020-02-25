@@ -166,7 +166,7 @@ func (p *Proxy) serveImage(w http.ResponseWriter, r *http.Request) {
 		actualReq.Header.Set("User-Agent", p.UserAgent)
 	}
 	if len(p.ContentTypes) != 0 {
-		actualReq.Header.Set("Accept", strings.Join(p.ContentTypes, ", "))
+		// actualReq.Header.Set("Accept", strings.Join(p.ContentTypes, ", "))
 	}
 	resp, err := p.Client.Do(actualReq)
 
